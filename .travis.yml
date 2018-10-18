@@ -1,0 +1,45 @@
+dist: trusty
+sudo: false
+language: rust
+
+cache:
+  cargo: true
+
+branches:
+  only:
+    - master
+
+script: >-
+  cargo update &&
+  cargo build --all-targets
+
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+  include:
+    - rust: beta
+    - rust: nightly
+    - rust: beta
+      os: osx
+    - rust: beta
+      os: windows
+
+    - rust: beta
+      env: DEPLOY_API_DOC
+      script: >-
+        rm -rf target/doc &&
+        cargo update &&
+        cargo doc --no-deps --all-features -p rustls -p tower-service &&
+        cargo doc --no-deps --all-features &&
+        rm -rf target/doc/.lock &&
+        (echo '<meta http-equiv="refresh" content="0;URL=tsukuyomi_server/index.html">' > target/doc/index.html)
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GH_TOKEN
+        repo: tsukuyomi-rs/tsukuyomi-server
+        target_branch: gh-pages
+        local_dir: target/doc
+        on:
+          branch: master
