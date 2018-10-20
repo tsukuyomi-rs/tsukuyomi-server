@@ -1,5 +1,8 @@
 pub use self::imp::{HttpRequest, HttpResponse, OnUpgrade, RequestBody, ResponseBody, UpgradedIo};
 
+#[doc(no_inline)]
+pub use hyper::body::{Body, Payload};
+
 pub(crate) mod imp {
     use bytes::{Buf, BufMut};
     use crate::CritError;
