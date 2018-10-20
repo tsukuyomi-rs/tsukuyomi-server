@@ -8,6 +8,18 @@ description = """
 A general purpose HTTP server based on Hyper and tower-service.
 """
 
+include = [
+    "/src/**/*.*",
+    "/tests/**/*.*",
+    "/benches/**/*.*",
+    "/examples/**/*.*",
+    "/build.rs",
+    "/Cargo.toml",
+    "/README.md",
+    "/LICENSE-MIT",
+    "/LICENSE-APACHE",
+]
+
 [dependencies]
 bytes = "0.4.10"
 futures = "0.1.25"
