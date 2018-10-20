@@ -3,13 +3,14 @@ use std::mem;
 
 use futures::{Future, Poll};
 use http::Response;
+use hyper::body::Payload;
 use tokio::executor::thread_pool::Builder as ThreadPoolBuilder;
 use tokio::runtime;
 use tokio::runtime::Runtime;
 use tower_service::{NewService, Service};
 
 use crate::service::http::imp::{HttpRequestImpl, HttpResponseImpl};
-use crate::service::http::{HttpRequest, HttpResponse, ResponseBody};
+use crate::service::http::{HttpRequest, HttpResponse};
 use crate::CritError;
 
 use super::data::{Data, Receive};
@@ -98,9 +99,9 @@ where
 
 #[cfg_attr(feature = "cargo-clippy", allow(large_enum_variant))]
 #[derive(Debug)]
-enum TestResponseFuture<F, Bd: ResponseBody> {
+enum TestResponseFuture<F, Bd: Payload> {
     Initial(F),
-    Receive(http::response::Parts, Receive<Bd::Payload>),
+    Receive(http::response::Parts, Receive<Bd>),
     Done,
 }
 
@@ -109,7 +110,7 @@ where
     F: Future,
     F::Item: HttpResponse<Body = Bd>,
     F::Error: Into<CritError>,
-    Bd: ResponseBody,
+    Bd: Payload,
 {
     type Item = Response<Data>;
     type Error = CritError;
@@ -133,7 +134,7 @@ where
                 TestResponseFuture::Initial(..) => {
                     let response = response.expect("unexpected condition");
                     let (parts, body) = response.into_response().into_parts();
-                    let receive = self::Receive::new(body.into_payload());
+                    let receive = self::Receive::new(body);
                     *self = TestResponseFuture::Receive(parts, receive);
                 }
                 TestResponseFuture::Receive(parts, receive) => {

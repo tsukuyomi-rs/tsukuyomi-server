@@ -6,7 +6,7 @@ use http::Response;
 use hyper::server::conn::Http;
 use tower_service::{NewService, Service};
 
-use crate::service::http::imp::{HttpRequestImpl, HttpResponseImpl, ResponseBodyImpl};
+use crate::service::http::imp::{HttpRequestImpl, HttpResponseImpl};
 use crate::service::http::{HttpRequest, HttpResponse, RequestBody};
 use crate::CritError;
 
@@ -95,7 +95,7 @@ where
     S::InitError: Into<CritError>,
 {
     type ReqBody = hyper::Body;
-    type ResBody = <<S::Response as HttpResponseImpl>::Body as ResponseBodyImpl>::Payload;
+    type ResBody = <S::Response as HttpResponseImpl>::Body;
     type Error = S::Error;
     type Service = LiftedHttpService<S::Service>;
     type InitError = S::InitError;
@@ -117,7 +117,7 @@ where
     S::Error: Into<CritError>,
 {
     type ReqBody = hyper::Body;
-    type ResBody = <<S::Response as HttpResponseImpl>::Body as ResponseBodyImpl>::Payload;
+    type ResBody = <S::Response as HttpResponseImpl>::Body;
     type Error = S::Error;
     type Future = LiftedHttpServiceFuture<S::Future>;
 
@@ -137,13 +137,13 @@ where
     F::Item: HttpResponse,
     F::Error: Into<CritError>,
 {
-    type Item = Response<<<F::Item as HttpResponseImpl>::Body as ResponseBodyImpl>::Payload>;
+    type Item = Response<<F::Item as HttpResponseImpl>::Body>;
     type Error = F::Error;
 
     #[inline]
     fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
         self.0
             .poll()
-            .map(|x| x.map(|response| response.into_response().map(|body| body.into_payload())))
+            .map(|x| x.map(|response| response.into_response()))
     }
 }

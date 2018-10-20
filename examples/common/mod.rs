@@ -2,7 +2,7 @@ use std::io;
 
 use tsukuyomi_server::futures::{future, Async, Poll};
 use tsukuyomi_server::http::{Request, Response};
-use tsukuyomi_server::service::http::RequestBody;
+use tsukuyomi_server::service::http::{Body, RequestBody};
 use tsukuyomi_server::service::{NewService, Service};
 
 #[derive(Default, Copy, Clone)]
@@ -12,7 +12,7 @@ pub struct Echo {
 
 impl NewService for Echo {
     type Request = Request<RequestBody>;
-    type Response = Response<&'static str>;
+    type Response = Response<Body>;
     type Error = io::Error;
     type Service = Echo;
     type InitError = io::Error;
@@ -25,7 +25,7 @@ impl NewService for Echo {
 
 impl Service for Echo {
     type Request = Request<RequestBody>;
-    type Response = Response<&'static str>;
+    type Response = Response<Body>;
     type Error = io::Error;
     type Future = future::FutureResult<Self::Response, Self::Error>;
 

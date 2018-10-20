@@ -1,4 +1,4 @@
-pub use self::imp::{HttpRequest, HttpResponse, OnUpgrade, RequestBody, ResponseBody, UpgradedIo};
+pub use self::imp::{HttpRequest, HttpResponse, OnUpgrade, RequestBody, UpgradedIo};
 
 #[doc(no_inline)]
 pub use hyper::body::{Body, Payload};
@@ -143,121 +143,21 @@ pub(crate) mod imp {
 
     pub trait HttpResponse: HttpResponseImpl {}
 
-    impl<T> HttpResponse for http::Response<T> where T: ResponseBody {}
+    impl<T> HttpResponse for http::Response<T> where T: Payload {}
 
     pub trait HttpResponseImpl {
-        type Body: ResponseBody;
+        type Body: Payload;
         fn into_response(self) -> http::Response<Self::Body>;
     }
 
     impl<T> HttpResponseImpl for http::Response<T>
     where
-        T: ResponseBody,
+        T: Payload,
     {
         type Body = T;
 
         fn into_response(self) -> http::Response<Self::Body> {
             self
-        }
-    }
-
-    pub trait ResponseBody: ResponseBodyImpl {}
-
-    pub trait ResponseBodyImpl: Send + 'static {
-        type Data: Buf + Send;
-        type Error: Into<CritError>;
-        type Payload: Payload<Data = Self::Data, Error = Self::Error>;
-
-        fn into_payload(self) -> Self::Payload;
-    }
-
-    impl ResponseBody for hyper::body::Body {}
-    impl ResponseBodyImpl for hyper::body::Body {
-        type Data = hyper::body::Chunk;
-        type Error = hyper::Error;
-        type Payload = hyper::body::Body;
-
-        #[inline]
-        fn into_payload(self) -> Self::Payload {
-            self
-        }
-    }
-
-    mod sized {
-        use super::{ResponseBody, ResponseBodyImpl};
-
-        use bytes::Bytes;
-        use futures::{Async, Poll};
-        use hyper::body::Payload;
-        use std::io;
-
-        #[derive(Debug)]
-        pub struct SizedPayload<T>(Option<T>);
-
-        impl<T> SizedPayload<T>
-        where
-            T: AsRef<[u8]> + Send + 'static,
-        {
-            fn new(data: T) -> Self {
-                SizedPayload(Some(data))
-            }
-        }
-
-        impl<T> Payload for SizedPayload<T>
-        where
-            T: AsRef<[u8]> + Send + 'static,
-        {
-            type Data = io::Cursor<T>;
-            type Error = io::Error;
-
-            #[inline]
-            fn poll_data(&mut self) -> Poll<Option<Self::Data>, Self::Error> {
-                Ok(Async::Ready(self.0.take().map(io::Cursor::new)))
-            }
-
-            #[inline]
-            fn is_end_stream(&self) -> bool {
-                self.0.is_none()
-            }
-
-            #[inline]
-            fn content_length(&self) -> Option<u64> {
-                self.0.as_ref().map(|data| data.as_ref().len() as u64)
-            }
-        }
-
-        impl ResponseBody for () {}
-        impl ResponseBodyImpl for () {
-            type Data = io::Cursor<[u8; 0]>;
-            type Error = io::Error;
-            type Payload = SizedPayload<[u8; 0]>;
-
-            fn into_payload(self) -> Self::Payload {
-                SizedPayload::new([])
-            }
-        }
-
-        macro_rules! impl_sized_body {
-            ($( $t:ty, )*) => {$(
-                impl ResponseBody for $t {}
-                impl ResponseBodyImpl for $t {
-                    type Data = io::Cursor<$t>;
-                    type Error = io::Error;
-                    type Payload = SizedPayload<$t>;
-
-                    fn into_payload(self) -> Self::Payload {
-                        SizedPayload(Some(self))
-                    }
-                }
-            )*};
-        }
-
-        impl_sized_body! {
-            &'static str,
-            String,
-            &'static [u8],
-            Vec<u8>,
-            Bytes,
         }
     }
 }
