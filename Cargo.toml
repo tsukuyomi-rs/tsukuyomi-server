@@ -27,3 +27,8 @@ tls = [
     "rustls",
     "tokio-rustls",
 ]
+
+[workspace]
+members = [
+    "crates/doctest",
+]
