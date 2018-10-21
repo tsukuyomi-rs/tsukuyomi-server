@@ -1,6 +1,6 @@
 //! A general purpose HTTP server based on Hyper and tower-service.
 
-#![doc(html_root_url = "https://docs.rs/tsukuyomi-server/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/tsukuyomi-server/0.1.1")]
 #![warn(
     missing_debug_implementations,
     nonstandard_style,
