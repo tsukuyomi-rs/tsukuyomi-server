@@ -7,12 +7,15 @@ pub use self::tls::TlsConfig;
 
 // ==== impl ====
 mod imp {
-    use futures::Stream;
+    use std;
     use std::io;
     use std::net::SocketAddr;
+
+    use futures::Stream;
+    use tokio;
     use tokio::io::{AsyncRead, AsyncWrite};
 
-    use crate::CritError;
+    use CritError;
 
     pub trait Transport: TransportImpl {}
 

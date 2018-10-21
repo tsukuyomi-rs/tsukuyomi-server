@@ -1,6 +1,7 @@
 use std::io;
 
 use tsukuyomi_server::futures::{future, Async, Poll};
+use tsukuyomi_server::http;
 use tsukuyomi_server::http::{Request, Response};
 use tsukuyomi_server::service::http::{Body, RequestBody};
 use tsukuyomi_server::service::{NewService, Service};

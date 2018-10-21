@@ -2,6 +2,7 @@ use std::io;
 use std::mem;
 
 use futures::{Future, Poll};
+use http;
 use http::Response;
 use hyper::body::Payload;
 use tokio::executor::thread_pool::Builder as ThreadPoolBuilder;
@@ -9,9 +10,9 @@ use tokio::runtime;
 use tokio::runtime::Runtime;
 use tower_service::{NewService, Service};
 
-use crate::service::http::imp::{HttpRequestImpl, HttpResponseImpl};
-use crate::service::http::{HttpRequest, HttpResponse};
-use crate::CritError;
+use service::http::imp::{HttpRequestImpl, HttpResponseImpl};
+use service::http::{HttpRequest, HttpResponse};
+use CritError;
 
 use super::data::{Data, Receive};
 use super::input::Input;

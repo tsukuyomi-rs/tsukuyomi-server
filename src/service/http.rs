@@ -4,12 +4,18 @@ pub use self::imp::{HttpRequest, HttpResponse, OnUpgrade, RequestBody, UpgradedI
 pub use hyper::body::{Body, Payload};
 
 pub(crate) mod imp {
-    use bytes::{Buf, BufMut};
-    use crate::CritError;
-    use futures::{Future, Poll, Stream};
-    use http::header::HeaderMap;
-    use hyper::body::Payload;
+    use std;
     use std::io;
+
+    use bytes::{Buf, BufMut};
+    use futures::{Future, Poll, Stream};
+    use http;
+    use http::header::HeaderMap;
+    use hyper;
+    use hyper::body::Payload;
+    use tokio;
+
+    use CritError;
 
     // ==== HttpRequest ====
 

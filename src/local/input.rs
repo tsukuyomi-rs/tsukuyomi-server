@@ -1,6 +1,8 @@
-use crate::service::http::RequestBody;
+use http;
 use http::header::HeaderValue;
 use http::Request;
+
+use service::http::RequestBody;
 
 // ==== traits ====
 

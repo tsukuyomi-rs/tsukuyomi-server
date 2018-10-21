@@ -8,11 +8,11 @@ fn main() {
 
 #[cfg(unix)]
 mod imp {
-    use crate::common::Echo;
+    use common::Echo;
     use std::path::Path;
 
     pub fn main() {
-        tsukuyomi_server::server(Echo::default())
+        ::tsukuyomi_server::server(Echo::default())
             .transport(Path::new("/tmp/unix-socket.sock"))
             .run_forever()
             .expect("failed to run the server");

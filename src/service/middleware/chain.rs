@@ -1,12 +1,14 @@
-use super::Middleware;
-use futures::{Future, Poll};
 use std::sync::Arc;
+
+use futures::{Future, Poll};
 use tower_service::NewService;
+
+use super::Middleware;
 
 #[derive(Debug)]
 pub struct MiddlewareChain<S, M> {
     new_service: S,
-    middleware: std::sync::Arc<M>,
+    middleware: Arc<M>,
 }
 
 impl<S, M> MiddlewareChain<S, M>
@@ -45,7 +47,7 @@ where
 #[allow(missing_debug_implementations)]
 pub struct MiddlewareChainFuture<F, M> {
     future: F,
-    middleware: std::sync::Arc<M>,
+    middleware: Arc<M>,
 }
 
 impl<F, M> Future for MiddlewareChainFuture<F, M>

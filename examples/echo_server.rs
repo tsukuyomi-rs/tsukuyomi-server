@@ -2,7 +2,7 @@ extern crate tsukuyomi_server;
 
 mod common;
 
-use crate::common::Echo;
+use common::Echo;
 use std::net::SocketAddr;
 
 fn main() {

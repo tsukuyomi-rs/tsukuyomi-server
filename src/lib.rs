@@ -5,7 +5,6 @@
     missing_debug_implementations,
     nonstandard_style,
     rust_2018_idioms,
-    rust_2018_compatibility,
     unused
 )]
 
@@ -14,6 +13,8 @@ extern crate bytes;
 pub extern crate futures;
 pub extern crate http;
 extern crate hyper;
+#[macro_use]
+extern crate log;
 extern crate tokio;
 extern crate tokio_threadpool;
 extern crate tower_service;
@@ -31,6 +32,6 @@ pub mod service;
 /// A type alias representing a critical error.
 pub type CritError = Box<dyn std::error::Error + Send + Sync + 'static>;
 
-pub fn server<S>(new_service: S) -> crate::server::Server<S> {
-    crate::server::Server::new(new_service)
+pub fn server<S>(new_service: S) -> server::Server<S> {
+    server::Server::new(new_service)
 }

@@ -18,14 +18,26 @@ matrix:
     - rust: nightly
   fast_finish: true
   include:
+    - rust: 1.29.2
     - rust: beta
     - rust: nightly
-    - rust: beta
+    - rust: stable
       os: osx
-    - rust: beta
+    - rust: stable
       os: windows
 
-    - rust: beta
+    - rust: stable
+      before_script:
+        - rustup component add rustfmt-preview clippy-preview
+      script: >-
+        cargo update &&
+        cargo fmt -- --check &&
+        cargo clippy --all-targets &&
+        cargo test &&
+        cargo test --all-features &&
+        cargo test --no-default-features
+
+    - rust: stable
       env: DEPLOY_API_DOC
       script: >-
         rm -rf target/doc &&

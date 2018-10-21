@@ -1,14 +1,18 @@
 pub mod transport;
 pub use self::transport::Transport;
 
-use futures::{Future, Poll};
-use http::Response;
+use std::io;
+
+use futures::{future, Future, Poll};
+use http::{Request, Response};
+use hyper;
 use hyper::server::conn::Http;
 use tower_service::{NewService, Service};
 
-use crate::service::http::imp::{HttpRequestImpl, HttpResponseImpl};
-use crate::service::http::{HttpRequest, HttpResponse, RequestBody};
-use crate::CritError;
+use rt;
+use service::http::imp::{HttpRequestImpl, HttpResponseImpl};
+use service::http::{HttpRequest, HttpResponse, RequestBody};
+use CritError;
 
 #[allow(missing_debug_implementations)]
 pub struct Server<S, Tr = ()> {
@@ -53,17 +57,17 @@ where
     S::InitError: Into<CritError>,
     Tr: Transport,
 {
-    pub fn run_forever(self) -> std::io::Result<()>
+    pub fn run_forever(self) -> io::Result<()>
     where
         S: Send + 'static,
         <S::Service as Service>::Future: Send + 'static,
         S::Service: Send + 'static,
         S::Future: Send + 'static,
     {
-        self.run_until(futures::future::empty::<(), ()>())
+        self.run_until(future::empty::<(), ()>())
     }
 
-    pub fn run_until<F>(self, signal: F) -> std::io::Result<()>
+    pub fn run_until<F>(self, signal: F) -> io::Result<()>
     where
         S: Send + 'static,
         <S::Service as Service>::Future: Send + 'static,
@@ -77,8 +81,8 @@ where
         let serve = builder
             .serve(new_service)
             .with_graceful_shutdown(signal)
-            .map_err(|e| log::error!("{}", e));
-        crate::rt::run(serve);
+            .map_err(|e| error!("{}", e));
+        rt::run(serve);
         Ok(())
     }
 }
@@ -99,7 +103,7 @@ where
     type Error = S::Error;
     type Service = LiftedHttpService<S::Service>;
     type InitError = S::InitError;
-    type Future = futures::future::Map<S::Future, fn(S::Service) -> LiftedHttpService<S::Service>>;
+    type Future = future::Map<S::Future, fn(S::Service) -> LiftedHttpService<S::Service>>;
 
     fn new_service(&self) -> Self::Future {
         self.0.new_service().map(LiftedHttpService)
@@ -122,7 +126,7 @@ where
     type Future = LiftedHttpServiceFuture<S::Future>;
 
     #[inline]
-    fn call(&mut self, request: http::Request<hyper::Body>) -> Self::Future {
+    fn call(&mut self, request: Request<hyper::Body>) -> Self::Future {
         let request = S::Request::from_request(request.map(|body| RequestBody(body)));
         LiftedHttpServiceFuture(self.0.call(request))
     }
