@@ -23,6 +23,9 @@ include = [
 ]
 
 [package.metadata.docs.rs]
+features = [
+    "tls",
+]
 # FIXME: remove it as soon as the rustc version used in docs.rs is updated
 rustdoc-args = ["--cfg", "tsukuyomi_server_inject_extern_prelude"]
 
