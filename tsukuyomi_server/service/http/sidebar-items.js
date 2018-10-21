@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["OnUpgrade",""],["RequestBody",""],["UpgradedIo","An asynchronous I/O upgraded from HTTP connection."]],"trait":[["HttpRequest",""],["HttpResponse",""]]});

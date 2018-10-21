@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["server",""]],"mod":[["local",""],["rt","Primitives for spawning asynchronous tasks"],["server",""],["service",""],["vendor",""]],"type":[["CritError","A type alias representing a critical error."]]});
