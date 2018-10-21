@@ -3,7 +3,7 @@
 [![crates.io](https://img.shields.io/crates/v/tsukuyomi-server.svg)](https://crates.io/crates/tsukuyomi-server)
 [![Docs.rs](https://docs.rs/tsukuyomi-server/badge.svg)](https://docs.rs/tsukuyomi-server)
 [![Master Doc](https://img.shields.io/badge/doc-master-blue.svg)](https://tsukuyomi-rs.github.io/tsukuyomi-server)
-[![dependency status](https://deps.rs/crate/tsukuyomi-server/0.1.1/status.svg)](https://deps.rs/crate/tsukuyomi-server/0.1.1)
+[![dependency status](https://deps.rs/crate/tsukuyomi-server/0.1.2/status.svg)](https://deps.rs/crate/tsukuyomi-server/0.1.2)
 [![Build Status](https://travis-ci.org/tsukuyomi-rs/tsukuyomi-server.svg?branch=master)](https://travis-ci.org/tsukuyomi-rs/tsukuyomi-server)
 
 A general purpose HTTP server based on Hyper and tower-service.
