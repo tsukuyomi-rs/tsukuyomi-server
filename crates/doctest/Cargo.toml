@@ -9,10 +9,7 @@ name = "doctest"
 path = "lib.rs"
 
 [dependencies]
-doubter = { version = "0.1", default-features = false }
+doubter = "0.1"
 
 [dev-dependencies]
 tsukuyomi-server = { path = "../.." }
-futures = "0.1"
-tower-service = "0.1"
-http = "0.1"

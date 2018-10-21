@@ -21,7 +21,9 @@
 
 extern crate bytes;
 #[macro_use]
+#[doc(hidden)]
 pub extern crate futures;
+#[doc(hidden)]
 pub extern crate http;
 extern crate hyper;
 #[macro_use]
@@ -31,6 +33,7 @@ extern crate tokio_threadpool;
 extern crate tower_service;
 
 #[cfg(feature = "tls")]
+#[doc(hidden)]
 pub extern crate rustls;
 #[cfg(feature = "tls")]
 extern crate tokio_rustls;
@@ -39,6 +42,13 @@ pub mod local;
 pub mod rt;
 pub mod server;
 pub mod service;
+
+pub mod vendor {
+    pub extern crate futures;
+    pub extern crate http;
+    #[cfg(feature = "tls")]
+    pub extern crate rustls;
+}
 
 /// A type alias representing a critical error.
 pub type CritError = Box<dyn std::error::Error + Send + Sync + 'static>;
