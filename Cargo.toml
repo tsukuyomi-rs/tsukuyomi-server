@@ -8,6 +8,8 @@ description = """
 A general purpose HTTP server based on Hyper and tower-service.
 """
 
+build = "build.rs"
+
 include = [
     "/src/**/*.*",
     "/tests/**/*.*",
@@ -19,6 +21,10 @@ include = [
     "/LICENSE-MIT",
     "/LICENSE-APACHE",
 ]
+
+[package.metadata.docs.rs]
+# FIXME: remove it as soon as the rustc version used in docs.rs is updated
+rustdoc-args = ["--cfg", "tsukuyomi_server_inject_extern_prelude"]
 
 [dependencies]
 bytes = "0.4"

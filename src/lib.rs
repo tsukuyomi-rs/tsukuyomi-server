@@ -1,3 +1,9 @@
+// FIXME: remove this feature gate as soon as the rustc version used in docs.rs is updated
+#![cfg_attr(
+    tsukuyomi_server_inject_extern_prelude,
+    feature(extern_prelude)
+)]
+
 //! A general purpose HTTP server based on Hyper and tower-service.
 
 #![doc(html_root_url = "https://docs.rs/tsukuyomi-server/0.1.1")]
@@ -6,6 +12,11 @@
     nonstandard_style,
     rust_2018_idioms,
     unused
+)]
+#![cfg_attr(tsukuyomi_server_deny_warnings, deny(warnings))]
+#![cfg_attr(
+    tsukuyomi_server_deny_warnings,
+    doc(test(attr(deny(warnings))))
 )]
 
 extern crate bytes;

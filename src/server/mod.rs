@@ -103,6 +103,7 @@ where
     type Error = S::Error;
     type Service = LiftedHttpService<S::Service>;
     type InitError = S::InitError;
+    #[cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
     type Future = future::Map<S::Future, fn(S::Service) -> LiftedHttpService<S::Service>>;
 
     fn new_service(&self) -> Self::Future {
@@ -127,7 +128,7 @@ where
 
     #[inline]
     fn call(&mut self, request: Request<hyper::Body>) -> Self::Future {
-        let request = S::Request::from_request(request.map(|body| RequestBody(body)));
+        let request = S::Request::from_request(request.map(RequestBody));
         LiftedHttpServiceFuture(self.0.call(request))
     }
 }

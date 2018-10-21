@@ -32,10 +32,7 @@ matrix:
       script: >-
         cargo update &&
         cargo fmt -- --check &&
-        cargo clippy --all-targets &&
-        cargo test &&
-        cargo test --all-features &&
-        cargo test --no-default-features
+        rake TSUKUYOMI_SERVER_DENY_WARNINGS=1
 
     - rust: stable
       env: DEPLOY_API_DOC

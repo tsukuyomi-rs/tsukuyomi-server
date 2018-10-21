@@ -4,7 +4,6 @@ pub use self::imp::{HttpRequest, HttpResponse, OnUpgrade, RequestBody, UpgradedI
 pub use hyper::body::{Body, Payload};
 
 pub(crate) mod imp {
-    use std;
     use std::io;
 
     use bytes::{Buf, BufMut};
@@ -44,10 +43,7 @@ pub(crate) mod imp {
         type Error = CritError;
 
         fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
-            self.0
-                .poll()
-                .map(|x| x.map(|upgraded| UpgradedIo(upgraded)))
-                .map_err(Into::into)
+            self.0.poll().map(|x| x.map(UpgradedIo)).map_err(Into::into)
         }
     }
 
